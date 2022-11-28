@@ -29,6 +29,9 @@ import {
 } from '@react-navigation/drawer';
 import useAuth from './src/hooks/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BattleNavigationScreen from './pages/BattleNavigationScreen';
+import BackpackScreen from './pages/BackpackScreen';
+import DetailPokemonScreen from './src/components/BackpackPages/Pokemon/DetailPokemonScreen';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -83,11 +86,30 @@ const CustomDrawerContent = props => {
 };
 
 const RootStack = () => {
+  const scheme = useColorScheme();
+  const isDarkMode = scheme === 'dark';
   return (
     <Drawer.Navigator
       screenOptions={{headerShown: false}}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          drawerLabelStyle: {
+            color: !isDarkMode && 'white',
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="Backpack"
+        component={BackpackScreen}
+        options={{
+          drawerLabelStyle: {
+            color: !isDarkMode && 'white',
+          },
+        }}
+      />
     </Drawer.Navigator>
   );
 };
@@ -107,6 +129,21 @@ const AppStack = () => {
           <Stack.Screen name="HomeStack" component={RootStack} />
           <Stack.Screen name="Auth" component={AuthScreen} />
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen
+            options={{
+              headerShown: true,
+            }}
+            name="Choose Batle"
+            component={BattleNavigationScreen}
+          />
+          <Stack.Screen
+            name="Detail Pokemon"
+            component={DetailPokemonScreen}
+            options={({route}) => ({
+              headerShown: true,
+              title: route.params.title,
+            })}
+          />
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>

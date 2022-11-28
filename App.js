@@ -11,11 +11,17 @@ import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
 import {AuthContextProvider as AuthGuard} from './src/context/AuthContext';
 import AppStack from './AppStack';
+import {QueryClient, QueryClientProvider} from 'react-query';
+
 const App = () => {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <Provider store={store}>
       <AuthGuard>
-        <AppStack />
+        <QueryClientProvider client={queryClient}>
+          <AppStack />
+        </QueryClientProvider>
       </AuthGuard>
     </Provider>
   );

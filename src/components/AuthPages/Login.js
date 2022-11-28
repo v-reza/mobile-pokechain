@@ -47,7 +47,7 @@ const LoginScreen = ({setIsTextDontHaveAccount, navigation}) => {
 
       if (error === false) {
         dispatch({type: 'IS_AUTH'});
-        navigation.replace('HomeStack');
+        navigation.navigate('HomeStack');
       }
 
       if (error && message) {

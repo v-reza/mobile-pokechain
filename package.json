@@ -16,12 +16,14 @@
     "@react-navigation/native-stack": "^6.9.2",
     "@reduxjs/toolkit": "^1.9.0",
     "axios": "^1.2.0-alpha.1",
+    "constant-pokechain": "^1.0.1",
     "jwt-decode": "^3.1.2",
     "native-base": "^3.4.22",
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-ico-material-design": "^3.3.1",
+    "react-native-linear-gradient": "^2.6.2",
     "react-native-modal": "^13.0.1",
     "react-native-reanimated": "^2.13.0",
     "react-native-safe-area-context": "^4.4.1",
@@ -29,8 +31,10 @@
     "react-native-spacer": "^1.7.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "12.1.1",
+    "react-query": "^3.39.2",
     "react-redux": "^8.0.5",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "sizedbox": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

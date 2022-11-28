@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   listArenaContainer: {
-    height: Dimensions.get('window').height / 2,
+    height: Dimensions.get('window').height / 2.5,
     padding: 20,
   },
   detailChallenge: {
@@ -120,6 +120,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 150,
     flexWrap: 'wrap',
+  },
+  wrapArenaLevelContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+  },
+  wrapRequiredPoint: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingHorizontal: 10,
+    width: 60,
+  },
+  requiredPoint: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  pressableLevelup: {
+    borderRadius: 8,
+    padding: 9,
+  },
+  textDarkMode: {
+    color: 'white',
+  },
+  textLightMode: {
+    color: 'black',
   },
 });
 
