@@ -9,14 +9,14 @@ const Navbar = ({navigation}) => {
         android_ripple={{borderless: true, radius: 20}}
         onPress={() => navigation.openDrawer()}>
         <Image
-          source={require('../dist/assets/profile.png')}
+          source={require('../dist/assets/navigation/Hamburger_MD.png')}
           style={styles.profileIcon}
         />
       </Pressable>
       <Pressable
         android_ripple={{borderless: true, radius: 20}}
         style={styles.chatIcon}>
-        <Icon name="chat-bubble" color="#448aaf" />
+        <Icon name="notifications-bell-button" color="#448aaf" />
       </Pressable>
     </View>
   );

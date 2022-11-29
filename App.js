@@ -12,6 +12,7 @@ import {store} from './src/redux/store';
 import {AuthContextProvider as AuthGuard} from './src/context/AuthContext';
 import AppStack from './AppStack';
 import {QueryClient, QueryClientProvider} from 'react-query';
+import {TailwindProvider} from 'nativewind';
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
