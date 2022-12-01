@@ -1,40 +1,43 @@
-import React, {useState} from 'react';
 import {
-  View,
-  SafeAreaView,
-  Pressable,
+  StyleSheet,
   Text,
-  FlatList,
+  View,
   ScrollView,
+  TouchableOpacity,
   Image,
   useColorScheme,
-  TouchableOpacity,
 } from 'react-native';
-import {VStack, Stack, Skeleton} from 'native-base';
-import {getPokemonElementType} from 'constant-pokechain';
-
-import styles from '../../../stylesheet/BackpackScreen/module_backpack_pokemon_styles';
+import React, {useEffect} from 'react';
 import {useAxios} from '../../../utils/axiosInstance';
 import {useQuery} from 'react-query';
-import {getBackpackPokemon} from '../schema/query';
-import {SizedBox} from 'sizedbox';
 import LinearGradient from 'react-native-linear-gradient';
-import {capitalizeFirstLetter} from '../../../utils/constant';
+import styles from '../../../stylesheet/BackpackScreen/module_backpack_pokemon_styles';
+import {VStack, Stack, Skeleton} from 'native-base';
+import {getItemType} from 'constant-pokechain';
 import Colors from '../../../utils/Colors';
-const ListPokemon = ({navigation}) => {
+import {getBackpackItems} from '../schema/query';
+import useAuth from '../../../hooks/useAuth';
+import useConsole from '../../../hooks/useConsole';
+import {useNavigation} from '@react-navigation/native';
+import {SizedBox} from 'sizedbox';
+import {capitalizeFirstLetter} from '../../../utils/constant';
+
+const ListItem = () => {
   const axiosInstance = useAxios();
   const scheme = useColorScheme();
   const isDarkMode = scheme === 'dark';
+  const navigation = useNavigation();
+
   const {
-    data: listPokemon,
+    data: listItems,
     isLoading,
     isError,
     refetch,
   } = useQuery({
-    queryKey: 'listBackpackPokemon',
-    queryFn: () => getBackpackPokemon(axiosInstance),
-    refetchRetry: 3,
+    queryKey: 'listBackpackItem',
+    queryFn: () => getBackpackItems(axiosInstance),
   });
+
   if (isError) {
     refetch();
   }
@@ -42,50 +45,46 @@ const ListPokemon = ({navigation}) => {
     <ScrollView style={styles.container}>
       {!isLoading ? (
         <ScrollView>
-          {listPokemon?.my_pokemons.map((item, index) => (
+          {listItems?.my_items.map((item, index) => (
             <Stack direction="column" mb="9" key={item.id}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Detail Pokemon', {
-                    detailPokemon: item,
-                    title: capitalizeFirstLetter(item.detail_pokemon.name),
-                  })
-                }>
+                onPress={() => {
+                  navigation.navigate('Detail Item', {
+                    item,
+                    title: capitalizeFirstLetter(item.name.replace('-', ' ')),
+                  });
+                }}>
                 <View style={styles.detailPokemonContainer}>
                   <LinearGradient
                     colors={[
                       isDarkMode ? Colors.gray : Colors.darkGray,
-                      getPokemonElementType(
-                        item.detail_pokemon.element.split(',')[0],
-                      ).rgba,
+                      getItemType(item.name).rgba,
                     ]}
                     style={styles.linearGradient}>
                     <View style={styles.elementContainer}>
                       <View style={styles.wrapElementContainer}>
-                        {item.detail_pokemon.element
-                          .split(',')
-                          .map((element, i) => {
-                            const elementImage = getPokemonElementType(element);
-                            return (
-                              <Stack direction="row" mx="2" key={i}>
-                                <Image
-                                  source={{uri: `${elementImage.img}`}}
-                                  style={styles.imgElement}
-                                />
-                              </Stack>
-                            );
-                          })}
+                        <Text
+                          style={{
+                            color:
+                              getItemType(item.name).detail.rarity.name ===
+                              'Common'
+                                ? 'white'
+                                : getItemType(item.name).detail.rarity.hex,
+                          }}
+                          className="text-md font-extrabold">
+                          {getItemType(item.name).detail.rarity.name}
+                        </Text>
                       </View>
                       <View style={styles.pokemonContainer}>
                         <Image
-                          source={{uri: `${item.detail_pokemon.front_default}`}}
+                          source={{uri: `${getItemType(item.name).img}`}}
                           style={styles.imgPokemon}
                         />
                         <View style={styles.detailNameLevelPokemon}>
                           <Text style={styles.textPokemonName}>
-                            {item.detail_pokemon.name}
+                            {item.name.replace('-', ' ')}
                           </Text>
-                          <Text>Level {item.detail_pokemon.level}</Text>
+                          <Text>Qty: {item.quantity}</Text>
                         </View>
                       </View>
                     </View>
@@ -107,4 +106,4 @@ const ListPokemon = ({navigation}) => {
   );
 };
 
-export default ListPokemon;
+export default ListItem;

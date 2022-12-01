@@ -4,7 +4,8 @@ import useAuth from '../hooks/useAuth';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const baseURL = 'https://api.pokechain.games/api/v1/';
+// const baseURL = 'https://api.pokechain.games/api/v1/';
+const baseURL = 'https://90a0-158-140-172-87.ap.ngrok.io/api/v1';
 
 export const useAxios = () => {
   const {access_token, dispatch} = useAuth();
@@ -30,13 +31,13 @@ export const useAxios = () => {
           await AsyncStorage.setItem('access_token', accessToken);
           req.headers.Authorization = `Bearer ${accessToken}`;
         })
-        .catch(async err => {
+        .catch(async _err => {
           await AsyncStorage.removeItem('access_token');
           await AsyncStorage.removeItem('refresh_token');
           dispatch({type: 'LOGOUT'});
         });
-      return req;
     }
+    return req;
   });
 
   return axiosInstance;

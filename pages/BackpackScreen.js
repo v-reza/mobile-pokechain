@@ -13,6 +13,7 @@ import {VStack} from 'native-base';
 import styles from '../src/stylesheet/BackpackScreen/module_backpack_styles';
 import Navbar from '../src/components/Navbar';
 import ListPokemon from '../src/components/BackpackPages/Pokemon/ListPokemon';
+import ListItem from '../src/components/BackpackPages/Items/ListItem';
 const BackpackScreen = ({navigation}) => {
   const scheme = useColorScheme();
   const isDarkMode = scheme === 'dark';
@@ -27,7 +28,7 @@ const BackpackScreen = ({navigation}) => {
       name: 'Bundles',
     },
     {
-      name: 'Token',
+      name: 'Combine',
     },
   ];
   const [selectedNavigation, setSelectedNavigation] = useState(
@@ -37,6 +38,8 @@ const BackpackScreen = ({navigation}) => {
   const RenderTabsComponent = () => {
     if (selectedNavigation.name === 'Pokemon') {
       return <ListPokemon navigation={navigation} />;
+    } else if (selectedNavigation.name === 'Items') {
+      return <ListItem />;
     }
   };
 

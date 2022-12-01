@@ -3339,9 +3339,9 @@ connect@^3.6.5:
     utils-merge "1.0.1"
 
 constant-pokechain@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/constant-pokechain/-/constant-pokechain-1.0.1.tgz#b99a5e2752d15cb34a995e6cad4d0f3e3721ec96"
-  integrity sha512-+qgJbUFZdefRt3F+stUhAgaNPdezHgdC7KQuBAk1RSKfbikBmVj2q5zyXIuzfy1lNFChhhdyGKCj1XD5nR6vKA==
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/constant-pokechain/-/constant-pokechain-1.1.5.tgz#01d31e9c156e4ade6403dfe45933d623b720aae7"
+  integrity sha512-RH8ktjOfMOuIBJBi9lh3eKZZZXyvbK/O1S/9ZpuFGbYlCncz1KhdMGx07Q4KBQNGfzSH5oGuTRWlzMAJZ3gf5g==
 
 convert-source-map@^1.4.0, convert-source-map@^1.6.0, convert-source-map@^1.7.0:
   version "1.9.0"

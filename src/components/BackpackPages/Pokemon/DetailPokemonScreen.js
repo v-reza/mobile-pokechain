@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,23 +7,85 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import {Stack, Skeleton} from 'native-base';
-import {getPokemonElementType, getEvolveItem} from 'constant-pokechain';
+import {Stack} from 'native-base';
+import {
+  getPokemonElementType,
+  getEvolveItem,
+  getItemType,
+} from 'constant-pokechain';
 import {SizedBox} from 'sizedbox';
 import styles from '../../../stylesheet/BackpackScreen/module_detailpokemon_styles.js';
 import LinearGradient from 'react-native-linear-gradient';
 import {useQuery} from 'react-query';
-import {getPokemonEvolution} from '../schema/query.js';
-const DetailPokemonScreen = ({navigation, route}) => {
+import {getBackpackItems, getPokemonEvolution} from '../schema/query.js';
+import {useAxios} from '../../../utils/axiosInstance.js';
+import {Slide} from 'native-base';
+const DetailPokemonScreen = ({route}) => {
   const {detailPokemon: item} = route.params;
+  const axiosInstance = useAxios();
+  const [slideErrorEvolve, setSlideErrorEvolve] = useState(false);
+  const [slideErrorMessage, setSlideErrorMessage] = useState('');
+  const [isSuccessEvolve, setIsSuccessEvolve] = useState(false);
   const {isFetching, data: isEvolve} = useQuery({
     queryKey: ['detailPokemon', item.detail_pokemon.name],
     queryFn: () => getPokemonEvolution(item.detail_pokemon.name),
     enabled: !!item.detail_pokemon.name,
     refetchOnWindowFocus: false,
   });
+
+  const {data: listItems} = useQuery({
+    queryKey: 'listBackpackItemDetailPokemon',
+    queryFn: () => getBackpackItems(axiosInstance),
+  });
+
+  const handleEvolve = isEvolvedPokemon => {
+    const awakeningItem = listItems?.my_items.find(
+      awaken => awaken.name === 'awakening',
+    )
+      ? listItems?.my_items.find(awaken => awaken.name === 'awakening').quantity
+      : 0;
+    if (item.detail_pokemon.level < 10) {
+      setSlideErrorEvolve(true);
+      setSlideErrorMessage('Level Pokemon must be 10 or max');
+      return;
+    } else if (awakeningItem < 1) {
+      setSlideErrorEvolve(true);
+      setSlideErrorMessage('You dont have awakening item');
+      return;
+    }
+
+    if (isEvolvedPokemon.required_item) {
+      const evolveItemRequired = listItems?.my_items.find(
+        evolveItem => evolveItem.name === isEvolvedPokemon.required_item,
+      )
+        ? listItems?.my_items.find(
+            evolveItem => evolveItem.name === isEvolvedPokemon.required_item,
+          ).quantity
+        : 0;
+      if (evolveItemRequired < 1) {
+        const nameItem = getItemType(isEvolvedPokemon.required_item).detail
+          .name;
+        setSlideErrorEvolve(true);
+        setSlideErrorMessage(`Your ${nameItem} is less than required`);
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (slideErrorEvolve) {
+      setTimeout(() => {
+        setSlideErrorEvolve(false);
+      }, 3000);
+    }
+  }, [slideErrorEvolve]);
   return (
     <SafeAreaView style={styles.container}>
+      <Slide in={slideErrorEvolve} placement="top">
+        <View className="bg-red-200 py-4 flex items-center justify-center">
+          <Text className="font-bold text-red-600">{slideErrorMessage}</Text>
+        </View>
+      </Slide>
       <ScrollView>
         <View style={styles.pokemonContainer}>
           <Text style={styles.textBold15Size}>
@@ -223,51 +285,96 @@ const DetailPokemonScreen = ({navigation, route}) => {
                           })}
                         </View>
                       </View>
-                      {evolve.required_item && (
-                        <View style={styles.informationContainer}>
-                          <View style={styles.wrapInformationContainer}>
-                            <Text style={styles.textBoldSize}>
-                              Required Evolution Item
-                            </Text>
-                          </View>
-                          <View style={styles.statsInformationContainer}>
-                            <Stack direction="row" mx="2" mb="8">
-                              <View style={styles.wrapStats}>
-                                <Image
-                                  source={{
-                                    uri: `${
-                                      getEvolveItem(evolve.required_item).img
-                                    }`,
-                                  }}
-                                  style={styles.img50}
-                                />
-                                <SizedBox horizontal={10} />
-                                <View style={styles.statsContainer}>
-                                  <Text
-                                    style={[
-                                      styles.textBold15Size,
-                                      styles.capitalizeText,
-                                    ]}>
-                                    {evolve.required_item.replace('-', ' ')}{' '}
-                                    <Text>{evolve.qty_required_item}x</Text>
-                                  </Text>
-                                </View>
-                              </View>
-                            </Stack>
-                            <Pressable
-                              style={({pressed}) => [
-                                {
-                                  backgroundColor: pressed
-                                    ? 'rgb(210, 230, 255)'
-                                    : '#6875F5',
-                                },
-                                styles.btnEvolve,
-                              ]}>
-                              <Text style={styles.textBold15Size}>Evolve</Text>
-                            </Pressable>
-                          </View>
+                      <View style={styles.informationContainer}>
+                        <View style={styles.wrapInformationContainer}>
+                          <Text style={styles.textBoldSize}>
+                            Required Evolution Item
+                          </Text>
                         </View>
-                      )}
+                        <View style={styles.statsInformationContainer}>
+                          <Stack direction="row" mx="2" mb="8">
+                            <View style={styles.wrapStats}>
+                              <Image
+                                source={require('../../../dist/assets/items/awakening.webp')}
+                                className="w-auto h-auto"
+                              />
+                              <SizedBox horizontal={10} />
+                              <View
+                                style={styles.statsContainer}
+                                className="self-center">
+                                <Text
+                                  style={[
+                                    styles.textBold15Size,
+                                    styles.capitalizeText,
+                                  ]}>
+                                  Awakening{' '}
+                                  <Text>
+                                    {listItems?.my_items.find(
+                                      items => items.name === 'awakening',
+                                    )
+                                      ? listItems?.my_items.find(
+                                          items => items.name === 'awakening',
+                                        ).quantity
+                                      : 0}
+                                    /1
+                                  </Text>
+                                </Text>
+                              </View>
+                            </View>
+                          </Stack>
+                          {evolve.required_item && (
+                            <View>
+                              <Stack direction="row" mx="2" mb="8">
+                                <View style={styles.wrapStats}>
+                                  <Image
+                                    source={{
+                                      uri: `${
+                                        getEvolveItem(evolve.required_item).img
+                                      }`,
+                                    }}
+                                    style={styles.img50}
+                                  />
+                                  <SizedBox horizontal={10} />
+                                  <View style={styles.statsContainer}>
+                                    <Text
+                                      style={[
+                                        styles.textBold15Size,
+                                        styles.capitalizeText,
+                                      ]}>
+                                      {evolve.required_item.replace('-', ' ')}{' '}
+                                      <Text>
+                                        {listItems?.my_items.find(
+                                          items =>
+                                            items.name === evolve.required_item,
+                                        )
+                                          ? listItems?.my_items.find(
+                                              items =>
+                                                items.name ===
+                                                evolve.required_item,
+                                            ).quantity
+                                          : 0}
+                                        /{evolve.qty_required_item}
+                                      </Text>
+                                    </Text>
+                                  </View>
+                                </View>
+                              </Stack>
+                            </View>
+                          )}
+                          <Pressable
+                            style={({pressed}) => [
+                              {
+                                backgroundColor: pressed
+                                  ? 'rgb(210, 230, 255)'
+                                  : '#6875F5',
+                              },
+                              styles.btnEvolve,
+                            ]}
+                            onPress={() => handleEvolve(evolve)}>
+                            <Text style={styles.textBold15Size}>Evolve</Text>
+                          </Pressable>
+                        </View>
+                      </View>
                     </LinearGradient>
                   </View>
                 </Stack>

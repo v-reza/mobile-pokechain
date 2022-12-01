@@ -14,12 +14,14 @@ import styles from '../src/stylesheet/HomeScreen/module_home_styles';
 import {VStack, Progress} from 'native-base';
 import {getArena} from '../src/utils/constant';
 import Modal from 'react-native-modal';
+import {useQuery} from 'react-query';
+import Arena from '../src/components/HomePages/Arena';
+
 const HomeScreen = ({navigation}) => {
   const [showModalBattle, setShowModalBattle] = useState(false);
   const {currentUser} = useUser();
   const scheme = useColorScheme();
   const isDarkMode = scheme === 'dark';
-
   return (
     <View style={styles.container}>
       <Navbar navigation={navigation} />
@@ -61,127 +63,13 @@ const HomeScreen = ({navigation}) => {
           </View>
         </View>
       </View>
-      <View style={styles.arenaContainer}>
-        <View style={styles.arenaBorder}>
-          <View style={styles.wrapArenaContainer}>
-            <Text
-              style={[
-                styles.textArena,
-                isDarkMode ? styles.textDarkMode : styles.textLightMode,
-              ]}>
-              Arena
-            </Text>
-          </View>
-          <ScrollView style={styles.listArenaContainer}>
-            <VStack space="6">
-              <View style={styles.detailChallenge}>
-                <Image
-                  source={require('../src/dist/assets/closed-chest.png')}
-                  style={styles.imgChestChallenge}
-                />
-                <View style={styles.wrappingTextChallenge}>
-                  <Text
-                    style={
-                      isDarkMode ? styles.textDarkMode : styles.textLightMode
-                    }>
-                    Win the match 10x
-                  </Text>
-                </View>
-                <View>
-                  <Pressable
-                    style={({pressed}) => [
-                      {
-                        backgroundColor: pressed
-                          ? 'rgb(210, 230, 255)'
-                          : '#F59E0B',
-                      },
-                      styles.pressableClaim,
-                    ]}>
-                    <Text>Claim</Text>
-                  </Pressable>
-                </View>
-              </View>
-              <View style={styles.detailChallenge}>
-                <Image
-                  source={require('../src/dist/assets/open-chest.png')}
-                  style={styles.imgChestChallenge}
-                />
-                <View style={styles.wrappingTextChallenge}>
-                  <Text
-                    style={
-                      isDarkMode ? styles.textDarkMode : styles.textLightMode
-                    }>
-                    Play with pokemon fire & win the game
-                  </Text>
-                </View>
-                <View>
-                  <Pressable
-                    disabled={true}
-                    style={[
-                      styles.pressableClaim,
-                      styles.disabledPressableClaim,
-                    ]}>
-                    <Text>Claimed</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </VStack>
-          </ScrollView>
-          <View style={styles.wrapArenaLevelContainer}>
-            <Text
-              style={[
-                styles.textArena,
-                isDarkMode ? styles.textDarkMode : styles.textLightMode,
-              ]}>
-              Arena {currentUser?.profile.tier}
-            </Text>
-            <View>
-              {getArena(currentUser?.profile.tier)?.required_point_level_up -
-                currentUser?.profile.point >
-              0 ? (
-                <View>
-                  <Text
-                    style={[
-                      styles.requiredPoint,
-                      isDarkMode ? styles.textDarkMode : styles.textLightMode,
-                    ]}>
-                    Need{' '}
-                    {getArena(currentUser?.profile.tier)
-                      ?.required_point_level_up -
-                      currentUser?.profile.point}{' '}
-                    points to level up
-                  </Text>
-                  <Progress
-                    value={
-                      currentUser?.profile?.point /
-                      getArena(currentUser?.profile.tier).value_level
-                    }
-                    mt="2"
-                  />
-                </View>
-              ) : (
-                <Pressable
-                  style={({pressed}) => [
-                    {
-                      backgroundColor: pressed
-                        ? 'rgb(210, 230, 255)'
-                        : '#6875F5',
-                    },
-                    styles.pressableLevelup,
-                  ]}>
-                  <Text style={styles.requiredPoint}>Level Up</Text>
-                </Pressable>
-              )}
-            </View>
-          </View>
-        </View>
-      </View>
+      <Arena />
       <View style={styles.navContainer}>
         <View style={styles.bottomNavbar}>
           <Pressable
             style={styles.iconBehave}
             android_ripple={{borderless: true, radius: 50}}
-            onPress={() => navigation.navigate('Choose Batle')}>
+            onPress={() => navigation.navigate('Choose Battle')}>
             <Image
               source={require('../src/dist/assets/battle-icon.png')}
               style={styles.battleIcon}

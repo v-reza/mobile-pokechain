@@ -35,6 +35,9 @@ import useUser from './src/hooks/useUser';
 import {interpolate, useAnimatedStyle} from 'react-native-reanimated';
 
 import Animated from 'react-native-reanimated';
+import {navigationRef} from './src/utils/navigationRef';
+import ClaimedArenaModal from './src/screens/modal/ClaimedArenaModal';
+import DetailItemScreen from './src/components/BackpackPages/Items/DetailItemScreen';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -346,7 +349,9 @@ const AppStack = () => {
   const scheme = useColorScheme();
 
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <NavigationContainer
+      theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+      ref={navigationRef}>
       <NativeBaseProvider>
         <Stack.Navigator
           screenOptions={{
@@ -360,7 +365,7 @@ const AppStack = () => {
             options={{
               headerShown: true,
             }}
-            name="Choose Batle"
+            name="Choose Battle"
             component={BattleNavigationScreen}
           />
           <Stack.Screen
@@ -371,6 +376,24 @@ const AppStack = () => {
               title: route.params.title,
             })}
           />
+          <Stack.Screen
+            name="Detail Item"
+            component={DetailItemScreen}
+            options={({route}) => ({
+              headerShown: true,
+              title: route.params.title,
+            })}
+          />
+
+          <Stack.Group
+            screenOptions={{
+              presentation: 'modal',
+            }}>
+            <Stack.Screen
+              name="ClaimedArenaModal"
+              component={ClaimedArenaModal}
+            />
+          </Stack.Group>
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>
