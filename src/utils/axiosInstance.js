@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const baseURL = 'https://api.pokechain.games/api/v1/';
-const baseURL = 'https://90a0-158-140-172-87.ap.ngrok.io/api/v1';
+const baseURL = 'https://87c0-103-213-128-5.ap.ngrok.io/api/v1';
 
 export const useAxios = () => {
   const {access_token, dispatch} = useAuth();

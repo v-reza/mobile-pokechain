@@ -31,4 +31,20 @@ export const Icons = [
     name: 'favorite',
     destination: require('../dist/assets/navigation/Star.png'),
   },
+  {
+    name: 'pokemon',
+    destination: require('../dist/assets/pikachu.png'),
+  },
+  {
+    name: 'items',
+    destination: require('../dist/assets/sales-stats.png'),
+  },
+  {
+    name: 'bundles',
+    destination: require('../dist/assets/tab-bundle.png'),
+  },
+  {
+    name: 'combine',
+    destination: require('../dist/assets/combine.png'),
+  },
 ];
